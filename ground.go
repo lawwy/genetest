@@ -32,7 +32,6 @@ func (g *Ground) GetAround(p *Position) *Env {
 }
 
 func (g *Ground) Exec(p *Position, m move) (bool, *Position) {
-	//TODO:这个方法好像有点复杂
 	switch m {
 	case 0:
 		//不动
@@ -64,6 +63,7 @@ func (g *Ground) Exec(p *Position, m move) (bool, *Position) {
 		return true,down
 	case 5:
 		if g.IsSolid(p){
+			g.Board[p.X][p.Y] = 1
 			return true,p
 		}
 		return false,p
@@ -97,6 +97,7 @@ func InitBoard(h int,w int,s int) [][]int {
 		r := FillSlice(w,1)
 		r = append([]int{0},r...)
 		r = append(r,0)
+		b = append(b,r)
 	}
 	b = append(b,FillSlice(w+2,0))
 	for i:=0;i<s;i++{
