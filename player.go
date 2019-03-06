@@ -1,12 +1,8 @@
 package main
 
-import (
-	"strconv"
-)
-
 type Player struct {
 	Pos   *Position
-	Genes map[string]move
+	Genes map[geneKey]move
 }
 
 /*
@@ -19,19 +15,17 @@ type Player struct {
 */
 type move int
 
+type geneKey string
+
 func NewPlayer() *Player {
 	p := &Player{
-		Pos: &Position{0, 0},
+		Pos: &Position{1, 1},
 	}
 	p.Genes = RandomGene()
 	return p
 }
 
-func (p *Player) computeGeneKey(env *Env) string {
-	return strconv.Itoa(env.Up) + strconv.Itoa(env.Down) + strconv.Itoa(env.Left) + strconv.Itoa(env.Right) + strconv.Itoa(env.Mid)
-}
-
 func (p *Player) NextMove(env *Env) move {
-	key := p.computeGeneKey(env)
+	key := ComputeGeneKey(env)
 	return p.Genes[key]
 }
