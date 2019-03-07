@@ -1,9 +1,5 @@
 package utils
 
-import (
-	"math/rand"
-)
-
 type Env struct {
 	Up    int
 	Down  int
@@ -13,7 +9,7 @@ type Env struct {
 }
 
 type Ground struct {
-	Board [][]int
+	Board  [][]int
 	Height int
 	Weight int
 	Solids int
@@ -38,35 +34,35 @@ func (g *Ground) Exec(p *Position, m move) (bool, *Position) {
 		return true, p
 	case 1:
 		//向左
-		left := p.Left();
+		left := p.Left()
 		if g.IsWall(left) {
-			return false,p
+			return false, p
 		}
-		return true,left
+		return true, left
 	case 2:
-		right := p.Right();
+		right := p.Right()
 		if g.IsWall(right) {
-			return false,p
+			return false, p
 		}
-		return true,right
+		return true, right
 	case 3:
-		up := p.Up();
+		up := p.Up()
 		if g.IsWall(up) {
-			return false,p
+			return false, p
 		}
-		return true,up
+		return true, up
 	case 4:
-		down := p.Down();
+		down := p.Down()
 		if g.IsWall(down) {
-			return false,p
+			return false, p
 		}
-		return true,down
+		return true, down
 	case 5:
-		if g.IsSolid(p){
+		if g.IsSolid(p) {
 			g.Board[p.X][p.Y] = 1
-			return true,p
+			return true, p
 		}
-		return false,p
+		return false, p
 	}
 	return true, p
 }
@@ -90,19 +86,19 @@ func (g *Ground) Value(p *Position) int {
 }
 
 //TODO:test
-func InitBoard(h int,w int,s int) [][]int {
+func InitBoard(h int, w int, s int) [][]int {
 	b := [][]int{}
-	b = append(b,FillSlice(w+2,0))
-	for i:=0;i<h;i++{
-		r := FillSlice(w,1)
-		r = append([]int{0},r...)
-		r = append(r,0)
-		b = append(b,r)
+	b = append(b, FillSlice(w+2, 0))
+	for i := 0; i < h; i++ {
+		r := FillSlice(w, 1)
+		r = append([]int{0}, r...)
+		r = append(r, 0)
+		b = append(b, r)
 	}
-	b = append(b,FillSlice(w+2,0))
-	for i:=0;i<s;i++{
-		p := rand.Intn(h-1)+1
-		q := rand.Intn(w-1)+1
+	b = append(b, FillSlice(w+2, 0))
+	for i := 0; i < s; i++ {
+		p := RandomInt(h-1) + 1
+		q := RandomInt(w-1) + 1
 		b[p][q] = 2
 	}
 	return b
@@ -110,18 +106,18 @@ func InitBoard(h int,w int,s int) [][]int {
 
 func NewGround() *Ground {
 	g := &Ground{
-		Height:9,
-		Weight:9,
-		Solids:10,
+		Height: 9,
+		Weight: 9,
+		Solids: 10,
 	}
-	g.Board = InitBoard(g.Height,g.Weight,g.Solids)
+	g.Board = InitBoard(g.Height, g.Weight, g.Solids)
 	return g
 }
 
-func FillSlice(l int,v int) []int {
+func FillSlice(l int, v int) []int {
 	s := []int{}
-	for i:=0;i<l;i++{
-		s = append(s,v)
+	for i := 0; i < l; i++ {
+		s = append(s, v)
 	}
 	return s
 }
