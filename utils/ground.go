@@ -59,7 +59,7 @@ func (g *Ground) Exec(p *Position, m move) (bool, *Position) {
 		return true, down
 	case 5:
 		if g.IsSolid(p) {
-			g.Board[p.X][p.Y] = 1
+			g.SetValue(p, 1)
 			return true, p
 		}
 		return false, p
@@ -68,21 +68,32 @@ func (g *Ground) Exec(p *Position, m move) (bool, *Position) {
 }
 
 func (g *Ground) IsSolid(p *Position) bool {
-	if g.Board[p.X][p.Y] == 2 {
+	if g.Value(p) == 2 {
 		return true
 	}
 	return false
 }
 
 func (g *Ground) IsWall(p *Position) bool {
-	if g.Board[p.X][p.Y] == 0 {
+	if g.Value(p) == 0 {
 		return true
 	}
 	return false
 }
 
 func (g *Ground) Value(p *Position) int {
-	return g.Board[p.X][p.Y]
+	return g.Board[p.Y][p.X]
+}
+
+func (g *Ground) SetValue(p *Position, v int) {
+	g.Board[p.Y][p.X] = v
+}
+
+func (g *Ground) RandomPos() *Position {
+	return &Position{
+		X: RandomInt(g.Weight-1) + 1,
+		Y: RandomInt(g.Height-1) + 1,
+	}
 }
 
 //TODO:test

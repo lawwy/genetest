@@ -9,6 +9,7 @@ func main() {
 	p := utils.NewPlayer()
 	g := utils.NewGround()
 	h := &utils.Host{}
+	p.Pos = g.RandomPos()
 	for i := 0; i < len(g.Board); i++ {
 		fmt.Println(g.Board[i])
 	}
