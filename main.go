@@ -5,61 +5,70 @@ import (
 	"genetest/utils"
 )
 
-type Task struct {
-	Player *utils.Player
-	Ground *utils.Ground
-	Host   *utils.Host
-}
-
 //TODO:主进化逻辑
-func start() {
-	// ts := []*Task{}
-	// for i := 0; i < 100; i++ {
-	// 	p := utils.NewPlayer()
-	// 	g := utils.NewGround()
-	// 	h := &utils.Host{}
-	// 	p.Pos = g.RandomPos()
-	// 	t := &Task{
-	// 		Player: p,
-	// 		Ground: g,
-	// 		Host:   h,
-	// 	}
-	// 	ts = append(ts, t)
-	// }
+func Run(ts []*utils.Player) []*utils.Player {
+	r := make(chan *Res,100)
+	for _,p := range ts {
+		go Play(p,r)
+	}
+	end := make(chan bool)
+	rr := []*Res{}
+	for c := range r {
+		rr = append(rr,c)
+		if len(rr) == 100 {
+			end <- true
+		}
+	}
+	<-end
+	return MergeAndSelect(rr)
 }
 
-func (t *Task) Run() {
-	p := t.Player
-	g := t.Ground
-	h := t.Host
-	fmt.Println("Genes:", p.Genes.GeneSeries())
-	for i := 0; i < len(g.Board); i++ {
-		fmt.Println(g.Board[i])
+func MergeAndSelect(rr []*Res) []*utils.Player {
+	//TODO
+	ps := []*utils.Player{}
+	for _,r := range rr {
+		ps = append(ps,r.Player)
 	}
-	for i := 0; i < 10; i++ {
-		fmt.Println("pos:", p.Pos)
-		env := g.GetAround(p.Pos)
-		fmt.Println("env:", env)
-		m := p.NextMove(env)
-		fmt.Println("m:", m)
-		success, np := g.Exec(p.Pos, m)
-		fmt.Println("success:", success)
-		fmt.Println("new Pos:", np)
-		p.Pos = np
-		h.Count(m, success)
-	}
-	fmt.Println(h.Score)
+	return ps
 }
 
-func main() {
-	p := utils.NewPlayer()
+type Res struct {
+	Player *utils.Player
+	Score int
+}
+
+func Play(p *utils.Player,res chan *Res){
 	g := utils.NewGround()
 	h := &utils.Host{}
 	p.Pos = g.RandomPos()
-	t := &Task{
-		Player: p,
-		Ground: g,
-		Host:   h,
+	for i := 0; i < 1000; i++ {
+		// fmt.Println("pos:", p.Pos)
+		env := g.GetAround(p.Pos)
+		// fmt.Println("env:", env)
+		m := p.NextMove(env)
+		// fmt.Println("m:", m)
+		success, np := g.Exec(p.Pos, m)
+		// fmt.Println("success:", success)
+		// fmt.Println("new Pos:", np)
+		p.Pos = np
+		h.Count(m, success)
 	}
-	t.Run()
+	// fmt.Println(h.Score)
+	res <- &Res{
+		Player:p,
+		Score:h.Score,
+	}
+}
+
+func main() {
+	//TODO:test
+	fmt.Println("Start")
+	ps := []*utils.Player{}
+	for i:=0;i<100;i++{
+		ps = append(ps,utils.NewPlayer())
+	}
+	for g:=0;g<100;g++{
+		ps = Run(ps)
+	}
+	//TODO:输出结果
 }
