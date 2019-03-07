@@ -2,6 +2,8 @@ package utils
 
 import (
 	"math/rand"
+	"sort"
+	"strconv"
 	"time"
 )
 
@@ -24,15 +26,35 @@ type geneKey int
 */
 type move int
 
-func RandomGene() map[geneKey]move {
-	m := map[geneKey]move{}
+type GeneMap map[geneKey]move
+
+func (gm GeneMap) GeneSeries() string {
+	keys := []int{}
+	for k := range gm {
+		keys = append(keys, int(k))
+	}
+	sort.Ints(keys)
+	s := ""
+	for _, k := range keys {
+		s = s + strconv.Itoa(int(gm[geneKey(k)]))
+	}
+	return s
+}
+
+func CombineGenes(p, q GeneMap) GeneMap {
+	//TODO:合并
+	return GeneMap{}
+}
+
+func RandomGene() GeneMap {
+	m := GeneMap{}
+	// m := map[geneKey]move{}
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
 			for k := 0; k < 3; k++ {
 				for p := 0; p < 3; p++ {
 					for q := 0; q < 3; q++ {
-						k := q*1 + p*3 + k*3*3 + j*3*3*3 + i*3*3*3*3
-						// k := strconv.Itoa(i) + strconv.Itoa(j) + strconv.Itoa(k) + strconv.Itoa(p) + strconv.Itoa(q)
+						k := computeGeneInt(q, p, k, j, i)
 						m[geneKey(k)] = move(RandomInt(6))
 					}
 				}
@@ -42,8 +64,11 @@ func RandomGene() map[geneKey]move {
 	return m
 }
 
+func computeGeneInt(up, down, left, right, mid int) int {
+	return up*1 + down*3 + left*3*3 + right*3*3*3 + mid*3*3*3*3
+}
+
 func ComputeGeneKey(env *Env) geneKey {
-	// str := strconv.Itoa(env.Up) + strconv.Itoa(env.Down) + strconv.Itoa(env.Left) + strconv.Itoa(env.Right) + strconv.Itoa(env.Mid)
-	k := env.Up*1 + env.Down*3 + env.Left*3*3 + env.Right*3*3*3 + env.Mid*3*3*3*3
+	k := computeGeneInt(env.Up, env.Down, env.Left, env.Right, env.Mid)
 	return geneKey(k)
 }

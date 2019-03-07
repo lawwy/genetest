@@ -2,7 +2,7 @@ package utils
 
 type Player struct {
 	Pos   *Position
-	Genes map[geneKey]move
+	Genes GeneMap
 }
 
 func NewPlayer() *Player {

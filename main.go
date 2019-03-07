@@ -5,11 +5,17 @@ import (
 	"genetest/utils"
 )
 
-func main() {
-	p := utils.NewPlayer()
-	g := utils.NewGround()
-	h := &utils.Host{}
-	p.Pos = g.RandomPos()
+type Task struct {
+	Player *utils.Player
+	Ground *utils.Ground
+	Host   *utils.Host
+}
+
+func (t *Task) Run() {
+	p := t.Player
+	g := t.Ground
+	h := t.Host
+	fmt.Println("Genes:", p.Genes.GeneSeries())
 	for i := 0; i < len(g.Board); i++ {
 		fmt.Println(g.Board[i])
 	}
@@ -26,4 +32,17 @@ func main() {
 		h.Count(m, success)
 	}
 	fmt.Println(h.Score)
+}
+
+func main() {
+	p := utils.NewPlayer()
+	g := utils.NewGround()
+	h := &utils.Host{}
+	p.Pos = g.RandomPos()
+	t := &Task{
+		Player: p,
+		Ground: g,
+		Host:   h,
+	}
+	t.Run()
 }
