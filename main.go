@@ -11,6 +11,23 @@ type Task struct {
 	Host   *utils.Host
 }
 
+//TODO:主进化逻辑
+func start() {
+	// ts := []*Task{}
+	// for i := 0; i < 100; i++ {
+	// 	p := utils.NewPlayer()
+	// 	g := utils.NewGround()
+	// 	h := &utils.Host{}
+	// 	p.Pos = g.RandomPos()
+	// 	t := &Task{
+	// 		Player: p,
+	// 		Ground: g,
+	// 		Host:   h,
+	// 	}
+	// 	ts = append(ts, t)
+	// }
+}
+
 func (t *Task) Run() {
 	p := t.Player
 	g := t.Ground

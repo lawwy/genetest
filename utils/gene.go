@@ -13,6 +13,8 @@ func RandomInt(limit int) int {
 	return r1.Intn(limit)
 }
 
+const TOTAL int = 243
+
 // type geneKey string
 type geneKey int
 
@@ -42,8 +44,16 @@ func (gm GeneMap) GeneSeries() string {
 }
 
 func CombineGenes(p, q GeneMap) GeneMap {
-	//TODO:合并
-	return GeneMap{}
+	n := GeneMap{}
+	mid := RandomInt(TOTAL - 1)
+	for i := 0; i < TOTAL; i++ {
+		if i < mid {
+			n[geneKey(i)] = p[geneKey(i)]
+		} else {
+			n[geneKey(i)] = q[geneKey(i)]
+		}
+	}
+	return n
 }
 
 func RandomGene() GeneMap {
