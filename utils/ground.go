@@ -1,5 +1,9 @@
 package utils
 
+import (
+	"fmt"
+)
+
 type Env struct {
 	Up    int
 	Down  int
@@ -96,6 +100,12 @@ func (g *Ground) RandomPos() *Position {
 	}
 }
 
+func (g *Ground) Print() {
+	for i := 0; i < len(g.Board); i++ {
+		fmt.Println(g.Board[i])
+	}
+}
+
 //TODO:test
 func InitBoard(h int, w int, s int) [][]int {
 	b := [][]int{}
@@ -117,11 +127,12 @@ func InitBoard(h int, w int, s int) [][]int {
 
 func NewGround() *Ground {
 	g := &Ground{
-		Height: 9,
-		Weight: 9,
+		Height: 7,
+		Weight: 7,
 		Solids: 10,
 	}
 	g.Board = InitBoard(g.Height, g.Weight, g.Solids)
+	// g.Print()
 	return g
 }
 

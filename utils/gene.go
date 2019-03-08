@@ -45,7 +45,9 @@ func (gm GeneMap) GeneSeries() string {
 
 func CombineGenes(p, q GeneMap) GeneMap {
 	n := GeneMap{}
-	mid := RandomInt(TOTAL - 1)
+	// mid := RandomInt(TOTAL - 1)
+	mid := 120
+
 	for i := 0; i < TOTAL; i++ {
 		if i < mid {
 			n[geneKey(i)] = p[geneKey(i)]
@@ -65,7 +67,7 @@ func RandomGene() GeneMap {
 				for p := 0; p < 3; p++ {
 					for q := 0; q < 3; q++ {
 						k := computeGeneInt(q, p, k, j, i)
-						m[geneKey(k)] = move(RandomInt(6))
+						m[geneKey(k)] = move(RandomInt(5))
 					}
 				}
 			}
