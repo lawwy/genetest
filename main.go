@@ -18,8 +18,9 @@ func main() {
 		SortPlayers(pp)
 		pp = MergeAndSelect(pp)
 	}
+	fmt.Println("LAST:")
 	for _, p := range pp {
-		fmt.Println(p.Score)
+		fmt.Print(p.Score, " ")
 	}
 }
 
@@ -46,6 +47,7 @@ func RandomPlayers() []*utils.Player {
 	pp := []*utils.Player{}
 	for i := 0; i < 100; i++ {
 		p := utils.NewPlayer(nil)
+		// fmt.Println(p.Genes.GeneSeries())
 		pp = append(pp, p)
 	}
 	return pp

@@ -34,39 +34,39 @@ func (g *Ground) GetAround(p *Position) *Env {
 func (g *Ground) Exec(p *Position, m move) (bool, *Position) {
 	switch m {
 	case 0:
-		//不动
-		return true, p
-	case 1:
 		//向左
 		left := p.Left()
 		if g.IsWall(left) {
 			return false, p
 		}
 		return true, left
-	case 2:
+	case 1:
 		right := p.Right()
 		if g.IsWall(right) {
 			return false, p
 		}
 		return true, right
-	case 3:
+	case 2:
 		up := p.Up()
 		if g.IsWall(up) {
 			return false, p
 		}
 		return true, up
-	case 4:
+	case 3:
 		down := p.Down()
 		if g.IsWall(down) {
 			return false, p
 		}
 		return true, down
-	case 5:
+	case 4:
 		if g.IsSolid(p) {
 			g.SetValue(p, 1)
 			return true, p
 		}
 		return false, p
+	case 5:
+		//不动
+		return true, p
 	}
 	return true, p
 }

@@ -24,6 +24,9 @@ func NewPlayer(gm GeneMap) *Player {
 
 func (p *Player) NextMove(env *Env) move {
 	key := ComputeGeneKey(env)
+	if p.Genes[key] == 6 {
+		return move(RandomInt(4))
+	}
 	return p.Genes[key]
 }
 
