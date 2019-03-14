@@ -10,17 +10,17 @@ import (
 
 const (
 	//种群个体数量
-	POPULATION_SIZE       = 200
+	POPULATION_SIZE       = 5 //200
 	TRY_TIMES             = 100
 	MOVE_TIMES            = 200
 	JAR_PROBABILITY       = 0.5
 	VARIATION_PROBABILITY = 0.078
-	EVAL_TIMES            = 2000
+	EVAL_TIMES            = 2
 	CROSS_PROBABILITY     = 0.82
 	MAX_VARI_COUNT        = 10
 )
 
-const GENE_SIZE = 243
+const GENE_SIZE = 5 //243
 
 var Rule = map[string]int{
 	"PICK_JAR":     10,
@@ -42,7 +42,7 @@ type Fitness struct {
 	Score float64
 }
 
-type FitnessSlice []Fitness
+type FitnessSlice []*Fitness
 
 func (ff FitnessSlice) Len() int {
 	return len(ff)
@@ -86,16 +86,16 @@ func GetInitPopulation() []Gene {
 	return gg
 }
 
-func PopulationFitness(gg []Gene) []Fitness {
-	ff := []Fitness{}
+func PopulationFitness(gg []Gene) []*Fitness {
+	ff := []*Fitness{}
 	for _, g := range gg {
 		score := g.Exec()
-		ff = append(ff, Fitness{g, score})
+		ff = append(ff, &Fitness{g, score})
 	}
 	return ff
 }
 
-func Evolve(ff []Fitness) []Gene {
+func Evolve(ff []*Fitness) []Gene {
 	sort.Sort(FitnessSlice(ff))
 	fmt.Println("最高分")
 	fmt.Println(ff[len(ff)-1].Score)
@@ -105,8 +105,10 @@ func Evolve(ff []Fitness) []Gene {
 	for len(newPopulation) <= GENE_SIZE {
 		father := Gene{}
 		mother := Gene{}
+		//ToTEST
 		copy(father, ff[getIndex(RandomFloat())].Item)
 		copy(mother, ff[getIndex(RandomFloat())].Item)
+		fmt.Println("mother", mother)
 		var child1, child2 Gene
 		if crossRate := RandomFloat(); crossRate < CROSS_PROBABILITY {
 			rPos := CrossPoint()
@@ -124,7 +126,7 @@ func Evolve(ff []Fitness) []Gene {
 		}
 		newPopulation = append(newPopulation, child1, child2)
 	}
-	return []Gene{}
+	return newPopulation
 }
 
 func Cross(father Gene, mother Gene, rPos int) Gene {
@@ -145,12 +147,14 @@ func GetWeightIndexFunc(weights []float64) func(float64) int {
 	}
 }
 
-func InitWeights(ff []Fitness) []float64 {
-	adjust := math.Abs(ff[0].Score) + 1
-	total := 0.0
+func InitWeights(ff []*Fitness) []float64 {
+	var total, adjust float64
+	if ff[0].Score < 0 {
+		adjust = math.Abs(ff[0].Score) + 1
+	}
 	weights := []float64{}
 	for _, f := range ff {
-		f.Score = f.Score + adjust //可调整
+		f.Score += adjust //可调整
 		total = total + f.Score
 	}
 	prev := 0.0
