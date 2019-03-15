@@ -39,19 +39,19 @@ func Test_GetInitPopulation(t *testing.T) {
 	fmt.Println(gg)
 }
 
-func Test_PopulationFitness(t *testing.T) {
-	gg := []Gene{
-		Gene{1, 2, 3, 4, 5},
-		Gene{1, 2, 0, 4, 5},
-		Gene{1, 2, 3, 8, 5},
-	}
-	ff := PopulationFitness(gg, func(Gene) float64 {
-		return RandomFloat()
-	})
-	for _, f := range ff {
-		fmt.Println(f)
-	}
-}
+// func Test_PopulationFitness(t *testing.T) {
+// 	gg := []Gene{
+// 		Gene{1, 2, 3, 4, 5},
+// 		Gene{1, 2, 0, 4, 5},
+// 		Gene{1, 2, 3, 8, 5},
+// 	}
+// 	ff := PopulationFitness(gg, func(Gene) float64 {
+// 		return RandomFloat()
+// 	})
+// 	for _, f := range ff {
+// 		fmt.Println(f)
+// 	}
+// }
 
 func Test_Cross(t *testing.T) {
 	f := Gene{0, 1, 2, 3, 4, 5, 6, 7, 8}

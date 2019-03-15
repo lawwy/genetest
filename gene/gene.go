@@ -183,13 +183,16 @@ func Run(g Gene) int {
 	return sum
 }
 
-func Exec(g Gene) float64 {
+func Exec(g Gene, ch chan<- *Fitness) {
 	sum := 0
-	times := 200
+	times := 100
 	for i := 0; i < times; i++ {
 		sum += Run(g)
 	}
-	return float64(sum) / float64(times)
+	ch <- &Fitness{
+		Item:  g,
+		Score: float64(sum) / float64(times),
+	}
 }
 
 func (g Gene) Copy() Gene {
