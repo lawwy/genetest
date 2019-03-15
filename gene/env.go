@@ -27,7 +27,7 @@ func (env *Env) Start() {
 	fmt.Println("Origin Population:", len(population))
 	for i := 0; i < env.EvalTime; i++ {
 		fmt.Println("GEN:", i)
-		scoreList := PopulationFitness(population)
+		scoreList := PopulationFitness(population, Exec)
 		population = env.Evolve(scoreList)
 	}
 }
@@ -50,10 +50,10 @@ func (env *Env) RandomGene() Gene {
 	return g
 }
 
-func PopulationFitness(gg []Gene) []*Fitness {
+func PopulationFitness(gg []Gene, exec func(Gene) float64) []*Fitness {
 	ff := []*Fitness{}
 	for _, g := range gg {
-		score := g.Exec()
+		score := exec(g)
 		ff = append(ff, &Fitness{g, score})
 	}
 	return ff

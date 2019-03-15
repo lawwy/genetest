@@ -49,6 +49,6 @@ func Test_Exec(t *testing.T) {
 	env := &Env{}
 	env.GeneSize = 243
 	g := env.RandomGene()
-	score := g.Exec()
+	score := Exec(g)
 	fmt.Println(score)
 }

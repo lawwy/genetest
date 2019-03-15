@@ -45,7 +45,9 @@ func Test_PopulationFitness(t *testing.T) {
 		Gene{1, 2, 0, 4, 5},
 		Gene{1, 2, 3, 8, 5},
 	}
-	ff := PopulationFitness(gg)
+	ff := PopulationFitness(gg, func(Gene) float64 {
+		return RandomFloat()
+	})
 	for _, f := range ff {
 		fmt.Println(f)
 	}

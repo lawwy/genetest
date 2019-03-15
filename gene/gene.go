@@ -183,7 +183,7 @@ func Run(g Gene) int {
 	return sum
 }
 
-func (g Gene) Exec() float64 {
+func Exec(g Gene) float64 {
 	sum := 0
 	times := 200
 	for i := 0; i < times; i++ {
