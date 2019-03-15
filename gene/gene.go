@@ -2,6 +2,7 @@ package gene
 
 import (
 	"fmt"
+	"time"
 )
 
 var Rule = map[string]int{
@@ -11,6 +12,12 @@ var Rule = map[string]int{
 	"MOVE":         0,
 	"STAND":        0,
 }
+
+const (
+	TRY_TIMES       = 100
+	MOVE_TIMES      = 200
+	JAR_PROBABILITY = 0.5
+)
 
 type Gene []int
 
@@ -172,10 +179,9 @@ func (s *Stage) Move(act int) int {
 }
 
 func Run(g Gene) int {
-	stage := NewStage(10, 10, 0.4)
-	moves := 200
+	stage := NewStage(10, 10, JAR_PROBABILITY)
 	sum := 0
-	for i := 0; i < moves; i++ {
+	for i := 0; i < MOVE_TIMES; i++ {
 		states := stage.GetStates()
 		act := g[CountIndex(states)]
 		sum += stage.Move(act)
@@ -183,15 +189,31 @@ func Run(g Gene) int {
 	return sum
 }
 
+func Show(g Gene) {
+	stage := NewStage(10, 10, 0.4)
+	moves := 200
+	// sum := 0
+	fmt.Println("Start")
+	stage.Print()
+	for i := 0; i < moves; i++ {
+		fmt.Println("-----------------------")
+		states := stage.GetStates()
+		act := g[CountIndex(states)]
+		_ = stage.Move(act)
+		stage.Print()
+		time.Sleep(time.Second)
+	}
+	fmt.Println("Done")
+}
+
 func Exec(g Gene, ch chan<- *Fitness) {
 	sum := 0
-	times := 100
-	for i := 0; i < times; i++ {
+	for i := 0; i < TRY_TIMES; i++ {
 		sum += Run(g)
 	}
 	ch <- &Fitness{
 		Item:  g,
-		Score: float64(sum) / float64(times),
+		Score: float64(sum) / float64(TRY_TIMES),
 	}
 }
 

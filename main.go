@@ -7,13 +7,13 @@ import (
 const (
 	//种群个体数量
 	POPULATION_SIZE       = 200 //200
-	TRY_TIMES             = 100
-	MOVE_TIMES            = 200
-	JAR_PROBABILITY       = 0.5
 	VARIATION_PROBABILITY = 0.078
 	EVAL_TIMES            = 2000
 	CROSS_PROBABILITY     = 0.82
 	MAX_VARI_COUNT        = 10
+	TRY_TIMES             = 100
+	MOVE_TIMES            = 200
+	JAR_PROBABILITY       = 0.5
 )
 
 const GENE_SIZE = 243 //243

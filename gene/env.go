@@ -21,6 +21,11 @@ type Env struct {
 	Rule             map[string]int
 }
 
+func init() {
+	rand.Seed(time.Now().Unix())
+	fmt.Println("random")
+}
+
 func (env *Env) Start() {
 	fmt.Println("Start:")
 	population := env.GetInitPopulation()
@@ -58,7 +63,7 @@ func PopulationFitness(gg []Gene, ch chan *Fitness) []*Fitness {
 	}
 	for i := 0; i < len(gg); i++ {
 		r := <-ch
-		fmt.Println(r.Score)
+		// fmt.Println(r.Score)
 		ff = append(ff, r)
 	}
 	// fmt.Println(ff)
@@ -68,8 +73,8 @@ func PopulationFitness(gg []Gene, ch chan *Fitness) []*Fitness {
 func (env *Env) Evolve(ff []*Fitness) []Gene {
 	fmt.Println("Evolve")
 	sort.Sort(FitnessSlice(ff))
-	fmt.Println("最高分")
-	fmt.Println(ff[len(ff)-1].Score)
+	fmt.Println("平均分", FitnessSlice(ff).Average())
+	fmt.Println("最高分：", ff[len(ff)-1].Score)
 	fmt.Println(ff[len(ff)-1].Item)
 	getIndex := GetWeightIndexFunc(InitWeights(ff))
 	newPopulation := []Gene{}
@@ -124,7 +129,7 @@ func InitWeights(ff []*Fitness) []float64 {
 	}
 	weights := []float64{}
 	for _, f := range ff {
-		f.Score += adjust //可调整
+		f.Score = math.Pow(f.Score+adjust, 2) //可调整
 		total = total + f.Score
 	}
 	prev := 0.0
@@ -173,14 +178,22 @@ func (ff FitnessSlice) Less(i, j int) bool {
 	return ff[i].Score < ff[j].Score
 }
 
+func (ff FitnessSlice) Average() float64 {
+	sum := 0.0
+	for _, f := range ff {
+		sum += f.Score
+	}
+	return sum / float64(len(ff))
+}
+
 func RandomInt(limit int) int {
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
-	return r1.Intn(limit)
+	// s1 := rand.NewSource(time.Now().UnixNano())
+	// r1 := rand.New(s1)
+	return rand.Intn(limit)
 }
 
 func RandomFloat() float64 {
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
-	return r1.Float64()
+	// s1 := rand.NewSource(time.Now().UnixNano())
+	// r1 := rand.New(s1)
+	return rand.Float64()
 }

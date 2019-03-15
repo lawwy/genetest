@@ -8,8 +8,11 @@ import (
 func Test_Random(t *testing.T) {
 	fmt.Println(RandomInt(7))
 	fmt.Println(RandomInt(7))
+	fmt.Println(RandomInt(7))
 	fmt.Println(RandomFloat())
 	fmt.Println(RandomFloat())
+	fmt.Println(RandomFloat())
+
 }
 
 func Test_InitWeights(t *testing.T) {
