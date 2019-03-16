@@ -8,33 +8,33 @@ const (
 	//种群个体数量
 	POPULATION_SIZE       = 200 //200
 	VARIATION_PROBABILITY = 0.078
-	EVAL_TIMES            = 2000
+	EVAL_TIMES            = 10
 	CROSS_PROBABILITY     = 0.82
 	MAX_VARI_COUNT        = 10
-	TRY_TIMES             = 100
-	MOVE_TIMES            = 200
-	JAR_PROBABILITY       = 0.5
 )
 
-const GENE_SIZE = 243 //243
+func main() {
+	env := &gene.Env{
+		EvalTime:         EVAL_TIMES,
+		MaxMutationCount: MAX_VARI_COUNT,
+		PR_Cross:         CROSS_PROBABILITY,
+		PR_Mutation:      VARIATION_PROBABILITY,
+		PoplationSize:    POPULATION_SIZE,
+	}
 
-var Rule = map[string]int{
-	"PICK_JAR":     10,
-	"PICK_NOTHING": -1,
-	"HIT_WALL":     -5,
+	env.Task = &gene.RobotTask{}
+	env.GeneSize = gene.ROBOT_GENE_SIZE
+	env.GeneRange = gene.ROBOT_GENE_RANGE
+
+	population, err := gene.ReadPopulationFromFile("./robot.gene")
+	checkErr(err)
+	population = env.Start(population)
+	err = gene.WriteGenes("./robot.gene", population)
+	checkErr(err)
 }
 
-func main() {
-	env := &gene.Env{}
-	env.GeneSize = GENE_SIZE
-	env.EvalTime = EVAL_TIMES
-	env.MaxMutationCount = MAX_VARI_COUNT
-	env.MoveTime = MOVE_TIMES
-	env.PR_Cross = CROSS_PROBABILITY
-	env.PR_Jar = JAR_PROBABILITY
-	env.PR_Mutation = VARIATION_PROBABILITY
-	env.PoplationSize = POPULATION_SIZE
-	env.Rule = Rule
-	env.TryTime = TRY_TIMES
-	env.Start()
+func checkErr(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

@@ -18,7 +18,10 @@ type Env struct {
 	EvalTime         int
 	MaxMutationCount int
 	GeneSize         int
+	GeneRange        int
 	Rule             map[string]int
+	RecordPath       string
+	Task             ITask
 }
 
 func init() {
@@ -26,16 +29,18 @@ func init() {
 	fmt.Println("random")
 }
 
-func (env *Env) Start() {
+func (env *Env) Start(population []Gene) []Gene {
 	fmt.Println("Start:")
-	population := env.GetInitPopulation()
+	if len(population) < env.PoplationSize {
+		population = env.GetInitPopulation()
+	}
 	fmt.Println("Origin Population:", len(population))
 	for i := 0; i < env.EvalTime; i++ {
 		fmt.Println("GEN:", i)
-		ch := make(chan *Fitness, len(population))
-		scoreList := PopulationFitness(population, ch)
+		scoreList := env.PopulationFitness(population)
 		population = env.Evolve(scoreList)
 	}
+	return population
 }
 
 func (env *Env) GetInitPopulation() []Gene {
@@ -47,27 +52,35 @@ func (env *Env) GetInitPopulation() []Gene {
 	return gg
 }
 
+//TODO:较由各自的任务生成随机基因？
 func (env *Env) RandomGene() Gene {
 	g := Gene{}
 	for j := 0; j < env.GeneSize; j++ {
-		n := RandomInt(7)
+		n := RandomInt(env.GeneRange)
 		g = append(g, n)
 	}
 	return g
 }
 
-func PopulationFitness(gg []Gene, ch chan *Fitness) []*Fitness {
+func (env *Env) PopulationFitness(gg []Gene) []*Fitness {
+	ch := make(chan *Fitness, len(gg))
 	ff := []*Fitness{}
 	for _, g := range gg {
-		go Exec(g, ch)
+		go env.Work(g, ch)
 	}
 	for i := 0; i < len(gg); i++ {
 		r := <-ch
-		// fmt.Println(r.Score)
 		ff = append(ff, r)
 	}
-	// fmt.Println(ff)
 	return ff
+}
+
+func (env *Env) Work(g Gene, res chan *Fitness) {
+	score := env.Task.Exec(g)
+	res <- &Fitness{
+		Item:  g,
+		Score: score,
+	}
 }
 
 func (env *Env) Evolve(ff []*Fitness) []Gene {
@@ -78,7 +91,7 @@ func (env *Env) Evolve(ff []*Fitness) []Gene {
 	fmt.Println(ff[len(ff)-1].Item)
 	getIndex := GetWeightIndexFunc(InitWeights(ff))
 	newPopulation := []Gene{}
-	for len(newPopulation) <= env.PoplationSize {
+	for len(newPopulation) < env.PoplationSize {
 		father := ff[getIndex(RandomFloat())].Item.Copy()
 		mother := ff[getIndex(RandomFloat())].Item.Copy()
 		var child1, child2 Gene
@@ -150,9 +163,9 @@ func (env *Env) DoVariation(g Gene) Gene {
 	count := RandomInt(env.MaxMutationCount) + 1
 	for i := 0; i < count; i++ {
 		rIndex := RandomInt(env.GeneSize)
-		ng := RandomInt(7)
+		ng := RandomInt(env.GeneRange)
 		for g[rIndex] == ng {
-			ng = RandomInt(7)
+			ng = RandomInt(env.GeneRange)
 		}
 		g[rIndex] = ng
 	}
@@ -184,16 +197,4 @@ func (ff FitnessSlice) Average() float64 {
 		sum += f.Score
 	}
 	return sum / float64(len(ff))
-}
-
-func RandomInt(limit int) int {
-	// s1 := rand.NewSource(time.Now().UnixNano())
-	// r1 := rand.New(s1)
-	return rand.Intn(limit)
-}
-
-func RandomFloat() float64 {
-	// s1 := rand.NewSource(time.Now().UnixNano())
-	// r1 := rand.New(s1)
-	return rand.Float64()
 }
