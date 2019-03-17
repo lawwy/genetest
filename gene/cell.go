@@ -11,6 +11,7 @@ const (
 	CELL_MOVE_TIMES = 60
 	CELL_TRY_TIMES  = 20
 	GROUND_WEIGHT   = 101
+	RADIUS          = 3
 )
 
 type Ground struct {
@@ -18,12 +19,14 @@ type Ground struct {
 	Row      []int
 	Answer   int
 	PR_Black float64
+	Radius   int
 }
 
-func NewGround(w int, pr float64) *Ground {
+func NewGround(w int, pr float64, radius int) *Ground {
 	g := &Ground{}
 	g.Weight = w
 	g.PR_Black = pr
+	g.Radius = radius
 	g.init()
 	return g
 }
@@ -44,19 +47,19 @@ func (s *Ground) init() {
 }
 
 func (s *Ground) getStates(x int) []int {
-	ss := []int{x - 3, x - 2, x - 1, x, x + 1, x + 2, x + 3}
-	// ss := []int{}
+	// ss := []int{x - 3, x - 2, x - 1, x, x + 1, x + 2, x + 3}
+	ss := []int{}
 	l := len(s.Row)
-	for i, n := range ss {
-		if n < 0 {
-			ss[i] = s.Row[l+n]
+	for i := -s.Radius; i <= s.Radius; i++ {
+		if i+x < 0 {
+			ss = append(ss, s.Row[l+i+x])
 			continue
 		}
-		if n > l-1 {
-			ss[i] = s.Row[n-l]
+		if i+x > l-1 {
+			ss = append(ss, s.Row[i+x-l])
 			continue
 		}
-		ss[i] = s.Row[n]
+		ss = append(ss, s.Row[i+x])
 	}
 	return ss
 }
@@ -128,7 +131,7 @@ func (s *Ground) Show(g Gene, times int) {
 }
 
 func RunCellTask(g Gene) float64 {
-	s := NewGround(GROUND_WEIGHT, RandomFloat())
+	s := NewGround(GROUND_WEIGHT, RandomFloat(), RADIUS)
 	for i := 0; i < CELL_MOVE_TIMES; i++ {
 		s.Wave(g)
 	}

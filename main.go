@@ -8,7 +8,7 @@ const (
 	//种群个体数量
 	POPULATION_SIZE       = 100 //200
 	VARIATION_PROBABILITY = 0.078
-	EVAL_TIMES            = 500
+	EVAL_TIMES            = 1000
 	CROSS_PROBABILITY     = 0.82
 	MAX_VARI_COUNT        = 8
 	// MAX_VARI_COUNT        = 10
