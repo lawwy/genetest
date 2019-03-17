@@ -6,11 +6,13 @@ import (
 
 const (
 	//种群个体数量
-	POPULATION_SIZE       = 200 //200
+	POPULATION_SIZE       = 100 //200
 	VARIATION_PROBABILITY = 0.078
-	EVAL_TIMES            = 10
+	EVAL_TIMES            = 500
 	CROSS_PROBABILITY     = 0.82
-	MAX_VARI_COUNT        = 10
+	MAX_VARI_COUNT        = 8
+	// MAX_VARI_COUNT        = 10
+
 )
 
 func main() {
@@ -21,16 +23,28 @@ func main() {
 		PR_Mutation:      VARIATION_PROBABILITY,
 		PoplationSize:    POPULATION_SIZE,
 	}
+	chooseTask("cell_classify", env)
 
-	env.Task = &gene.RobotTask{}
-	env.GeneSize = gene.ROBOT_GENE_SIZE
-	env.GeneRange = gene.ROBOT_GENE_RANGE
+	// population, err := gene.ReadPopulationFromFile("./robot.gene")
+	// checkErr(err)
+	// population = env.Start(population)
+	env.Start(nil)
+	// err = gene.WriteGenes("./robot.gene", population)
+	// checkErr(err)
+}
 
-	population, err := gene.ReadPopulationFromFile("./robot.gene")
-	checkErr(err)
-	population = env.Start(population)
-	err = gene.WriteGenes("./robot.gene", population)
-	checkErr(err)
+func chooseTask(t string, env *gene.Env) {
+	switch t {
+	case "clean_robot":
+		env.Task = &gene.RobotTask{}
+		env.GeneSize = gene.ROBOT_GENE_SIZE
+		env.GeneRange = gene.ROBOT_GENE_RANGE
+	case "cell_classify":
+		env.Task = &gene.CellTask{}
+		env.GeneSize = gene.CELL_GENE_SIZE
+		env.GeneRange = gene.CELL_GENE_RANGE
+	}
+	return
 }
 
 func checkErr(e error) {
